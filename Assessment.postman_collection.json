@@ -1,0 +1,187 @@
+{
+	"info": {
+		"_postman_id": "d4e229cc-8418-4d55-934a-bb10401a2a91",
+		"name": "Assessment",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "23203420"
+	},
+	"item": [
+		{
+			"name": "login",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Username\": \"admin\",\r\n    \"Password\": \"admin\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{requestUrl}}/auth",
+					"host": [
+						"{{requestUrl}}"
+					],
+					"path": [
+						"auth"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get students",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{requestUrl}}/api/student",
+					"host": [
+						"{{requestUrl}}"
+					],
+					"path": [
+						"api",
+						"student"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get student by id",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{requestUrl}}/api/student/3",
+					"host": [
+						"{{requestUrl}}"
+					],
+					"path": [
+						"api",
+						"student",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get student by class",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{requestUrl}}/api/student/class/3",
+					"host": [
+						"{{requestUrl}}"
+					],
+					"path": [
+						"api",
+						"student",
+						"class",
+						"3"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Get student by fee status",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{requestUrl}}/api/student/fee/Paid",
+					"host": [
+						"{{requestUrl}}"
+					],
+					"path": [
+						"api",
+						"student",
+						"fee",
+						"Paid"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Updating student details by id",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Name\":\"Abc\",\r\n    \"Class\":3,\r\n    \"Section\":\"C\",\r\n    \"DOB\":\"2010-06-17\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{requestUrl}}/api/student/16",
+					"host": [
+						"{{requestUrl}}"
+					],
+					"path": [
+						"api",
+						"student",
+						"16"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Posting new student data",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"Name\":\"Harshit\",\r\n    \"Class\":1,\r\n    \"Section\":\"A\",\r\n    \"DOB\":\"2012-05-27\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{requestUrl}}/api/student",
+					"host": [
+						"{{requestUrl}}"
+					],
+					"path": [
+						"api",
+						"student"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Delete a student record by id",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{requestUrl}}/api/student/18",
+					"host": [
+						"{{requestUrl}}"
+					],
+					"path": [
+						"api",
+						"student",
+						"18"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

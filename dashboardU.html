@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Main Pages</title>
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://getbootstrap.com/docs/5.2/assets/css/docs.css"
+      rel="stylesheet"
+    />
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- <link href="styles.css" rel="stylesheet" /> -->
+    <style>
+      * {
+        padding: 0;
+        margin: 0;
+        box-sizing: border-box;
+      }
+      p,
+      div,
+      table,
+      thead,
+      tr,
+      td {
+        color: white;
+      }
+      h5,
+      label {
+        color: black;
+      }
+      td,
+      th {
+        width: 200px;
+      }
+      body {
+        background-color: #235390;
+        background-image: url(https://d35aaqx5ub95lt.cloudfront.net/images/star-pattern.svg);
+      }
+      .main-wrapper {
+        width: 900px;
+        height: 100vh;
+        margin: 0 auto;
+      }
+      .heading {
+        margin-top: 90px;
+        font-size: 24px;
+      }
+      .top-section {
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+        height: 200px;
+      }
+      .first-half {
+        display: flex;
+        width: 400px;
+        justify-content: space-between;
+        align-items: center;
+      }
+      .left {
+        text-align: left;
+      }
+
+      table,
+      th,
+      td {
+        border: 1px solid black;
+        border-collapse: collapse;
+      }
+
+      th,
+      td {
+        padding: 5px;
+      }
+    </style>
+  </head>
+  <body class="text-center">
+    <section class="main-wrapper jumbotron">
+      <p class="heading">Welcome User!!!</p>
+      <div class="top-section">
+        <div class="first-half">
+          <select id="selectDD" class="form-select"></select>
+          <div class="input-group ms-1">
+            <input
+              id="search-input"
+              type="text"
+              class="form-control"
+              placeholder="Search"
+            />
+            <button
+              class="btn btn-outline-secondary"
+              type="button"
+              id="button-addon2"
+              onclick="filter()"
+            >
+              Submit
+            </button>
+          </div>
+        </div>
+        <div class="second-half">
+          <button
+            class="btn btn-primary ms-1"
+            type="button"
+            id="button-addon2"
+            onclick="getNewData()"
+          >
+            Remove Filter
+          </button>
+        </div>
+      </div>
+
+      <table id="studentTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Class</th>
+            <th>Section</th>
+            <th>DOB</th>
+          </tr>
+        </thead>
+        <tbody></tbody>
+      </table>
+      <br />
+      <button
+        class="btn btn-primary ms-1"
+        type="button"
+        id="button-addon2"
+        onclick="signOut()"
+      >
+        Sign Out
+      </button>
+    </section>
+
+    <script>
+      const token = localStorage.getItem("token");
+      function students() {
+        return fetch(`/api/student`, { headers: { token } })
+          .then((response) => {
+            return response.json();
+          })
+          .then((data) => {
+            return data;
+          })
+          .catch((err) => {
+            console.log("Fetch Error :", err);
+          });
+      }
+
+      const getStudents = async () => {
+        const ret = await students();
+        return ret;
+      };
+
+      const clearAndUpdateTable = (data) => {
+        var element = document.getElementsByTagName("tr"),
+          index;
+
+        for (index = element.length - 1; index > 0; index--) {
+          element[index].parentNode.removeChild(element[index]);
+        }
+        addRows([...data]);
+      };
+
+      (async function () {
+        const token = window.location.href.split("/")[4];
+        localStorage.setItem("token", token);
+        const data = await getStudents();
+        console.log("data", data);
+
+        addRows([...data]);
+
+        const className = Object.keys(data[0]) || [];
+        console.log("classes", className);
+        addSelectOptions(className);
+      })();
+
+      const addRows = (rows) => {
+        rows.forEach((e) => {
+          const tbody = document.querySelector("#studentTable tbody");
+          const tr = document.createElement("tr");
+          tr.innerHTML = rowHtml(e);
+          tbody.appendChild(tr);
+        });
+      };
+
+      const rowHtml = (row) => {
+        html = "";
+        html += `<td>${row.ID}</td><td>${row.Name}</td><td>${row.Class}</td><td>${row.Section}</td><td>${row.DOB}</td>`;
+        return html;
+      };
+
+      const addNewStudent = () => {
+        const name = document.getElementById("emailbox")?.value;
+        const classIn = document.getElementById("classbox")?.value;
+        const section = document.getElementById("sectionbox")?.value;
+        const dob = document.getElementById("dobbox")?.value;
+        return fetch(`/api/student`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            token,
+          },
+          body: JSON.stringify({
+            Name: name,
+            Class: classIn,
+            Section: section,
+            DOB: dob,
+          }),
+        })
+          .then(() => {
+            getStudents().then((data) => {
+              clearAndUpdateTable(data);
+            });
+          })
+          .catch((err) => {
+            console.log("Fetch Error :-S", err);
+          });
+      };
+
+      const getNewData = () => {
+        getStudents().then((data) => {
+          clearAndUpdateTable(data);
+        });
+      };
+
+      const filter = () => {
+        const selectedValue = document.getElementById("selectDD").value;
+        const searchedValue = document.getElementById("search-input").value;
+        console.log("filter called!", selectedValue, searchedValue);
+        if (selectedValue == "ID") {
+          return fetch(`/api/student/${searchedValue}`, { headers: { token } })
+            .then((response) => {
+              return response.json();
+            })
+            .then((data) => {
+              clearAndUpdateTable(data);
+            })
+            .catch((err) => {
+              console.log("Fetch Error :-S", err);
+            });
+        } else if (selectedValue == "Class") {
+          return fetch(`/api/student/class/${searchedValue}`, {
+            headers: { token },
+          })
+            .then((response) => {
+              return response.json();
+            })
+            .then((data) => {
+              clearAndUpdateTable(data);
+            })
+            .catch((err) => {
+              console.log("Fetch Error :-S", err);
+            });
+        } else if (selectedValue == "Section") {
+          return fetch(`/api/student/section/${searchedValue}`, {
+            headers: { token },
+          })
+            .then((response) => {
+              return response.json();
+            })
+            .then((data) => {
+              clearAndUpdateTable(data);
+            })
+            .catch((err) => {
+              console.log("Fetch Error :-S", err);
+            });
+        }
+      };
+
+      const signOut = () => {
+        localStorage.clear();
+      };
+
+      const addSelectOptions = (arr) => {
+        const dropdown = document.getElementById("selectDD");
+        dropdown.innerHTML = selectHtml(arr);
+      };
+
+      const selectHtml = (arr) => {
+        return arr
+          .map((ele) => `<option value=${ele}>${ele}</option>`)
+          .join("");
+      };
+    </script>
+  </body>
+</html>
